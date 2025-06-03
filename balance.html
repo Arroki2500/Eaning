@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আপনার ব্যালেন্স</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; margin: 0; padding: 0;
+            background-color: #f0f0f0; color: #333;
+        }
+        * { box-sizing: border-box; }
+
+        .hero-section {
+            background-color: #5cb85c; color: #fff;
+            padding: 30px 20px; text-align: center;
+        }
+        .hero-section h1 {
+            margin-top: 0; margin-bottom: 20px; font-size: 2em;
+        }
+        .hero-section nav a {
+            color: #fff; text-decoration: none; margin: 0 15px;
+            font-size: 1.1em; padding: 8px 0; display: inline-block;
+        }
+        .hero-section nav a:hover { text-decoration: underline; }
+
+        .main-container {
+            padding: 20px; max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .card {
+            background-color: #fff; border-radius: 8px;
+            padding: 20px; margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center; /* Center text in card */
+        }
+        .card h2 {
+            color: #5cb85c; margin-top: 0;
+        }
+        .balance-item {
+            padding: 15px; margin-bottom: 10px;
+            background-color: #e9ecef; border-radius: 5px;
+            font-size: 1.2em; text-align: left; /* Align text left within item */
+        }
+        .balance-item strong { color: #5cb85c; /* Green for amount */ }
+        .total-balance-item { /* More specific class for total */
+            background-color: #5cb85c; color: white; font-weight: bold;
+        }
+        .total-balance-item strong { color: white; } /* Ensure strong text is white */
+
+
+        footer {
+            background-color: #333; color: #fff; text-align: center;
+            padding: 20px; margin-top: 30px;
+        }
+        footer p { margin: 0; }
+
+        @media (max-width: 600px) {
+            .hero-section h1 { font-size: 1.8em; }
+            .hero-section nav a { margin: 0 8px; font-size: 1em; }
+            .main-container { padding: 15px; }
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero-section">
+        <h1>আপনার ব্যালেন্স</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="referral.html">Referral</a>
+            <a href="balance.html">Balance</a>
+            <a href="task.html">Tasks</a>
+            <a href="withdraw.html">Withdraw</a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <div class="card">
+            <h2>বর্তমান ব্যালেন্স</h2>
+            <div class="balance-item">
+                রেফারেল আয়: <strong id="referralIncomeDisplay">0</strong> টাকা
+            </div>
+            <div class="balance-item">
+                টাস্ক আয়: <strong id="taskIncomeDisplay">0</strong> টাকা
+            </div>
+            <div class="balance-item total-balance-item"> <!-- Used more specific class -->
+                মোট আয়: <strong id="totalIncomeDisplay">0</strong> টাকা
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 EarnMoney. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function loadData(key) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : initializeUserData();
+        }
+        
+        function initializeUserData() {
+             const defaultData = {
+                invitedByCode: null, myReferralCode: null, referrals: 0,
+                referralIncome: 0, taskIncome: 0, totalIncome: 0,
+                tasksCompletedToday: {}, tasksCompletedCount: 0, lastTaskDate: null, withdrawals: []
+            };
+            localStorage.setItem('userData', JSON.stringify(defaultData)); // Save default if not present
+            return defaultData;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = loadData('userData'); // This will call initialize if null
+            
+            document.getElementById('referralIncomeDisplay').textContent = userData.referralIncome || 0;
+            document.getElementById('taskIncomeDisplay').textContent = userData.taskIncome || 0;
+            
+            const totalIncome = (userData.referralIncome || 0) + (userData.taskIncome || 0);
+            document.getElementById('totalIncomeDisplay').textContent = totalIncome;
+
+            if (userData.totalIncome !== totalIncome) {
+                userData.totalIncome = totalIncome;
+                localStorage.setItem('userData', JSON.stringify(userData));
+            }
+        });
+    </script>
+</body>
+</html>
